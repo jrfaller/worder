@@ -14,6 +14,10 @@ By default, worder uses an english word database. You can switch to another data
 ./wordle.py --lang fr
 ~~~
 
+## Screenshots
+
+![Main screen](doc/screenshots/screenshot_0.png)
+
 ## Acknowledgment
 
 The words' lists come from the awesome Aspell spellchecker.
