@@ -13,3 +13,7 @@ By default, worder uses an english word database. You can switch to another data
 ~~~
 ./wordle.py --lang fr
 ~~~
+
+## Acknowledgment
+
+The words' lists come from the awesome Aspell spellchecker.
