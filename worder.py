@@ -8,7 +8,11 @@ import time
 import argparse
 
 parser = argparse.ArgumentParser(description='options of worder.')
-parser.add_argument('--lang', help = 'language used for the word database', choices=['en', 'fr'], default = 'en')
+parser.add_argument(
+    '--lang',
+    help='language used for the word database',
+    choices=['en', 'fr'],
+    default='en')
 args = parser.parse_args()
 
 database = 'words-' + args.lang
@@ -18,6 +22,7 @@ words = set(words)
 size = len(word)
 history = []
 candidate = []
+
 
 def main(screen):
     curses.use_default_colors()
@@ -29,25 +34,42 @@ def main(screen):
     draw_grid(screen)
     ask(screen)
 
+
 def current_round_line():
     return round_line(len(history) + 1)
+
 
 def round_line(round):
     return round * 2
 
+
 def draw_grid(screen):
     for round in range(1, 7):
-        screen.addstr(round_line(round) - 1, 1, '+-' * size + '+', curses.A_BOLD)
-        screen.addstr(round_line(round), 1, '| ' * size + '|', curses.A_BOLD)
+        screen.addstr(
+            round_line(round) - 1,
+            1,
+            '+-' * size + '+',
+            curses.A_BOLD)
+        screen.addstr(
+            round_line(round),
+            1,
+            '| ' * size + '|',
+            curses.A_BOLD)
         if round == 6:
-            screen.addstr(round_line(round) + 1, 1, '+-' * size + '+', curses.A_BOLD)
+            screen.addstr(
+                round_line(round) + 1,
+                1,
+                '+-' * size + '+',
+                curses.A_BOLD)
     screen.refresh()
+
 
 def clear_status(screen):
     for i in range(1, 30):
         screen.delch(15, 1)
     screen.refresh()
-    
+
+
 def ask(screen):
     while True:
         letter = screen.getch()
@@ -61,13 +83,21 @@ def ask(screen):
         elif letter == 127:
             if len(candidate) > 0:
                 candidate.pop()
-                screen.addstr(current_round_line(), (len(candidate) + 1) * 2, ' ')
+                screen.addstr(
+                    current_round_line(),
+                    (len(candidate) + 1) * 2,
+                    ' ')
         elif letter == 27:
             exit()
         elif letter in range(97, 123) and len(candidate) < size:
             candidate.append(chr(letter))
-            screen.addstr(current_round_line(), len(candidate) * 2, chr(letter), curses.A_BOLD)
+            screen.addstr(
+                current_round_line(),
+                len(candidate) * 2,
+                chr(letter),
+                curses.A_BOLD)
         screen.refresh()
+
 
 def validate_round(screen):
     for i in range(0, len(candidate)):
@@ -75,9 +105,14 @@ def validate_round(screen):
         color = 1
         if candidate[i] == word[i]:
             color = 2
-        elif candidate[0:i + 1].count(candidate[i]) + well_placed(candidate[i]) <= word.count(candidate[i]):
+        elif candidate[0:i + 1].count(candidate[i]) \
+                + well_placed(candidate[i]) <= word.count(candidate[i]):
             color = 3
-        screen.addstr(current_round_line(), (i + 1) * 2, candidate[i], curses.color_pair(color) | curses.A_BOLD)
+        screen.addstr(
+            current_round_line(),
+            (i + 1) * 2,
+            candidate[i],
+            curses.color_pair(color) | curses.A_BOLD)
         screen.refresh()
     history.append(candidate)
     if word_found():
@@ -87,20 +122,21 @@ def validate_round(screen):
     candidate.clear()
     ask(screen)
 
+
 def word_found():
     for i in range(0, size):
         if candidate[i] != word[i]:
             return False
-    
     return True
+
 
 def well_placed(letter):
     total = 0
     for i in range(0, size):
         if candidate[i] == letter and candidate[i] == word[i]:
             total += 1
-    
     return total
+
 
 def end_game(screen, won):
     if won:
@@ -108,7 +144,8 @@ def end_game(screen, won):
     else:
         screen.addstr(15, 1, 'Sorry, you lost. The solution was:')
         screen.addstr(16, 1, ''.join(word), curses.A_BOLD)
-    letter = screen.getch()
+    screen.getch()
     exit()
+
 
 curses.wrapper(main)
