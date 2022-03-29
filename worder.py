@@ -29,14 +29,23 @@ def main(screen):
     draw_grid(screen)
     ask(screen)
 
+def current_round_line():
+    return round_line(len(history) + 1)
+
+def round_line(round):
+    return round * 2
+
 def draw_grid(screen):
-    for line in range(1, 7):
-        screen.addstr(line, 1, '| ' * size + '|', curses.A_BOLD)
+    for round in range(1, 7):
+        screen.addstr(round_line(round) - 1, 1, '+-' * size + '+', curses.A_BOLD)
+        screen.addstr(round_line(round), 1, '| ' * size + '|', curses.A_BOLD)
+        if round == 6:
+            screen.addstr(round_line(round) + 1, 1, '+-' * size + '+', curses.A_BOLD)
     screen.refresh()
 
 def clear_status(screen):
     for i in range(1, 30):
-        screen.delch(8, 1)
+        screen.delch(15, 1)
     screen.refresh()
     
 def ask(screen):
@@ -48,18 +57,17 @@ def ask(screen):
                 if ''.join(candidate) in words:
                     validate_round(screen)
                 else:
-                    screen.addstr(8, 1, "Word not in dictionnary.")
+                    screen.addstr(15, 1, "Word not in dictionnary.")
         elif letter == 127:
             if len(candidate) > 0:
                 candidate.pop()
-                screen.addstr(len(history) + 1, (len(candidate) + 1) * 2, ' ')
+                screen.addstr(current_round_line(), (len(candidate) + 1) * 2, ' ')
         elif len(candidate) < size:
             candidate.append(chr(letter))
-            screen.addstr(len(history) + 1, len(candidate) * 2, chr(letter), curses.A_BOLD)
+            screen.addstr(current_round_line(), len(candidate) * 2, chr(letter), curses.A_BOLD)
         screen.refresh()
 
 def validate_round(screen):
-    round = len(history) + 1
     for i in range(0, len(candidate)):
         time.sleep(0.3)
         color = 1
@@ -67,7 +75,7 @@ def validate_round(screen):
             color = 2
         elif candidate[0:i + 1].count(candidate[i]) + well_placed(candidate[i]) <= word.count(candidate[i]):
             color = 3
-        screen.addstr(round, (i + 1) * 2, candidate[i], curses.color_pair(color) | curses.A_BOLD)
+        screen.addstr(current_round_line(), (i + 1) * 2, candidate[i], curses.color_pair(color) | curses.A_BOLD)
         screen.refresh()
     history.append(candidate)
     if same():
@@ -94,10 +102,10 @@ def well_placed(letter):
 
 def end_game(screen, won):
     if won:
-        screen.addstr(8, 1, 'Congratulation, you won!')
+        screen.addstr(15, 1, 'Congratulation, you won!')
     else:
-        screen.addstr(8, 1, 'Sorry, you lost. The solution was:')
-        screen.addstr(9, 1, ''.join(word), curses.A_BOLD)
+        screen.addstr(15, 1, 'Sorry, you lost. The solution was:')
+        screen.addstr(16, 1, ''.join(word), curses.A_BOLD)
     letter = screen.getch()
     exit()
 
