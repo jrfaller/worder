@@ -62,7 +62,9 @@ def ask(screen):
             if len(candidate) > 0:
                 candidate.pop()
                 screen.addstr(current_round_line(), (len(candidate) + 1) * 2, ' ')
-        elif len(candidate) < size:
+        elif letter == 27:
+            exit()
+        elif letter in range(97, 123) and len(candidate) < size:
             candidate.append(chr(letter))
             screen.addstr(current_round_line(), len(candidate) * 2, chr(letter), curses.A_BOLD)
         screen.refresh()
@@ -78,14 +80,14 @@ def validate_round(screen):
         screen.addstr(current_round_line(), (i + 1) * 2, candidate[i], curses.color_pair(color) | curses.A_BOLD)
         screen.refresh()
     history.append(candidate)
-    if same():
+    if word_found():
         end_game(screen, True)
     elif len(history) == 6:
         end_game(screen, False)
     candidate.clear()
     ask(screen)
 
-def same():
+def word_found():
     for i in range(0, size):
         if candidate[i] != word[i]:
             return False
