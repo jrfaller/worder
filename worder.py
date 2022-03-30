@@ -96,11 +96,13 @@ def ask(screen):
                 len(candidate) * 2,
                 chr(letter),
                 curses.A_BOLD)
+        assert len(candidate) >= 0 and len(candidate) <= size
         screen.refresh()
 
 
 def validate_round(screen):
-    for i in range(0, len(candidate)):
+    assert len(candidate) == size
+    for i in range(0, size):
         time.sleep(0.3)
         color = 1
         if candidate[i] == word[i]:
@@ -124,6 +126,7 @@ def validate_round(screen):
 
 
 def word_found():
+    assert len(candidate) == size
     for i in range(0, size):
         if candidate[i] != word[i]:
             return False
@@ -131,6 +134,7 @@ def word_found():
 
 
 def well_placed(letter):
+    assert len(candidate) == size
     total = 0
     for i in range(0, size):
         if candidate[i] == letter and candidate[i] == word[i]:
