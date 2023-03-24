@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) 2022 Jean-Rémy Falleri
+# Copyright (c) 2022-2023 Jean-Rémy Falleri
 
 import curses
 import random
